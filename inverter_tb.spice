@@ -1,0 +1,76 @@
+** sch_path: /app/Documents/ihp_bouquet/inverter/xschem/inverter_tb.sch
+**.subckt inverter_tb
+x1 in VDDA GND out inverter
+Vin in GND pulse(0 1.5 0 1n 1n 38n 80n)
+Vdd VDDA GND 1.5
+C1 out GND 1p m=1
+**** begin user architecture code
+
+.lib {PDK_ROOT}/ihp-sg13g2/libs.tech/ngspice/models/cornerMOSlv.lib mos_tt
+
+.param Wn={Wn} Wp={Wp}
+
+*Parameters
+
+.options TEMP = 50.0
+.param mc_mm_switch=0
+.param mc_pr_switch=1
+
+.control
+*VTC analysis
+DC Vin 0 1.5 1m
+.save all
+let Vamp = 1.5
+let vo_mid = Vamp/2
+let dvout = deriv(v(out))
+meas DC VSW find v(in) when v(out)=vo_mid
+meas DC VIL find v(in) WHEN dvout=-1 CROSS=1
+meas DC VIH find v(in) WHEN dvout=-1 CROSS=2
+meas DC VOL find v(out) WHEN dvout=-1 CROSS=2
+meas DC VOH find v(out) WHEN dvout=-1 CROSS=1
+echo VTC measurements
+print VSW
+print VIL
+print VIH
+print VOH
+print VOL
+echo
+set filetype=binary
+write results/inverter_tb_vtc.raw v(out) v(in) dvout VSW VIL VIH VOL VOH
+
+*Transient analysis
+tran 0.01n 160n
+let VP=1.5
+let per10 = Vp*0.1
+let per50 = Vp*0.5
+let per90 = Vp*0.9
+meas tran t_rise  TRIG v(out) VAL=per10 rise=2  TARG v(out) VAL=per90 rise=2
+meas tran t_fall  TRIG v(out) VAL=per90 fall=2  TARG v(out) VAL=per10 fall=2
+meas tran t_delay  TRIG v(in) VAL=per50 rise=1 TARG v(out) VAL=per50 fall=1
+echo tran measurements
+print t_delay t_rise t_fall > results/results.txt
+
+set filetype=binary
+write results/inverter_tb_tran.raw
+quit
+.endc
+.end
+
+
+**** end user architecture code
+**.ends
+
+* expanding   symbol:  /app/Documents/ihp_bouquet/inverter/xschem/inverter.sym # of pins=4
+** sym_path: /app/Documents/ihp_bouquet/inverter/xschem/inverter.sym
+** sch_path: /app/Documents/ihp_bouquet/inverter/xschem/inverter.sch
+.subckt inverter Vin VDD VSS Vout
+*.ipin Vin
+*.iopin VDD
+*.iopin VSS
+*.iopin Vout
+XM1 Vout Vin VDD VDD sg13_lv_pmos w={Wp} l=0.45u ng=1 m=1
+XM2 Vout Vin VSS VSS sg13_lv_nmos w={Wn} l=0.45u ng=1 m=1
+.ends
+
+.GLOBAL GND
+.end

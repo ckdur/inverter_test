@@ -1,0 +1,6 @@
+{
+  "rise_time_ns": [4, 20],
+  "fall_time_ns": [1, 10],
+  "delay_ns": [0, 5]
+}
+

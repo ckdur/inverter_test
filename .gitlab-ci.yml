@@ -1,0 +1,10 @@
+stages:
+  - simulate
+
+simulation_test:
+  stage: simulate
+  script:
+    - apt update && apt install -y ngspice
+    - pip install -r requirements.txt
+    - python sweep_test.py
+

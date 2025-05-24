@@ -1,0 +1,5 @@
+*.raw
+results
+results.txt
+*.log
+

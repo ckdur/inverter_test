@@ -1,26 +1,28 @@
 ** sch_path: /app/Documents/ihp_bouquet/inverter/xschem/inverter_tb.sch
 **.subckt inverter_tb
+.param Wn=1u Wp=3u VDD=1.5 temp=50
+
 x1 in VDDA GND out inverter
 Vin in GND pulse(0 1.5 0 1n 1n 38n 80n)
-Vdd VDDA GND 1.5
+Vdd VDDA GND {VDD}
 C1 out GND 1p m=1
 **** begin user architecture code
 
-.lib {PDK_ROOT}/ihp-sg13g2/libs.tech/ngspice/models/cornerMOSlv.lib mos_tt
+.lib {PDK_ROOT}/ihp-sg13g2/libs.tech/ngspice/models/cornerMOSlv.lib {corner}
 
-.param Wn={Wn} Wp={Wp}
 
 *Parameters
 
-.options TEMP = 50.0
+.options TEMP = {temp}
 .param mc_mm_switch=0
 .param mc_pr_switch=1
 
 .control
 *VTC analysis
-DC Vin 0 1.5 1m
+let VDD=1.5
+DC Vin 0 {VDD} 1m
 .save all
-let Vamp = 1.5
+let Vamp = {VDD}
 let vo_mid = Vamp/2
 let dvout = deriv(v(out))
 meas DC VSW find v(in) when v(out)=vo_mid
@@ -40,7 +42,7 @@ write results/inverter_tb_vtc.raw v(out) v(in) dvout VSW VIL VIH VOL VOH
 
 *Transient analysis
 tran 0.01n 160n
-let VP=1.5
+let VP={VDD}
 let per10 = Vp*0.1
 let per50 = Vp*0.5
 let per90 = Vp*0.9

@@ -1,0 +1,17 @@
+{
+  "VDD": {
+    "name": "Supply",
+    "type": "sweep",
+    "data": [0.82, 1.6, 3]
+  },
+  "corner": {
+    "name": "Corner",
+    "type": "list",
+    "data": ["mos_tt", "mos_ff", "mos_ss"]
+  },
+  "temp": {
+    "name": "Temp",
+    "type": "list",
+    "data": [-125, 0, 25, 100]
+  }
+}

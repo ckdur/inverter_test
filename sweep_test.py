@@ -37,7 +37,7 @@ def extract_metrics(output_file):
         rise_time = data["t_rise"]
         fall_time = data["t_fall"]
 
-        return delay * 1e9, rise_time * 1e9, fall_time * 1e9  # in ns
+        return delay, rise_time, fall_time   # in ns
     except:
         return None, None, None
 
@@ -64,9 +64,9 @@ def run_simulation(wn, wp, index):
         return False, delay, rise, fall
 
     # Compare to thresholds
-    rt_ok = check_threshold(rise, *thresholds["rise_time_ns"])
-    ft_ok = check_threshold(fall, *thresholds["fall_time_ns"])
-    d_ok = check_threshold(delay, *thresholds["delay_ns"])
+    rt_ok = check_threshold(rise, *thresholds["t_rise"]["range"])
+    ft_ok = check_threshold(fall, *thresholds["t_fall"]["range"])
+    d_ok = check_threshold(delay, *thresholds["t_delay"]["range"])
 
     return rt_ok and ft_ok and d_ok, delay, rise, fall
 

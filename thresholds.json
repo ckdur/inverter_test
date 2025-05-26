@@ -1,6 +1,14 @@
 {
-  "rise_time_ns": [4, 20],
-  "fall_time_ns": [1, 10],
-  "delay_ns": [0, 5]
+  "t_rise": {
+    "name": "Rise(s)",
+    "range": [4e-9, 20e-9]
+  },
+  "t_fall": {
+    "name": "Fall(s)",
+    "range": [1e-9, 10e-9]
+  },
+  "t_delay": {
+    "name": "Delay(s)",
+    "range": [0, 5e-9]
+  }
 }
-
